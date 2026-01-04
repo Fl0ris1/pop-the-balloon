@@ -49,5 +49,59 @@ def spawnBalloon():
     balloon=turtle.Turtle()
     balloon.shape("circle")
     balloon.color(random.choice(colors))
+    x=random.randint(-350,350)
+    y=random.randint(-200,350)
+    balloon.penup()
+    balloon.goto(x,y)
+    balloon.speed=random.uniform(1,3)
+    if random.random() < 0.2: #20% chance to be a black balloon
+        balloon.color("black")
+        balloon.isBomb=True
+    else:
+        balloon.isBomb=False
+
+    balloons.append(balloon)
+
+def updateScore():
+    global score
+    score+=10
+    pen1.clear()
+    pen1.write(f"SCORE:{score}",font=("Arial",16,"bold"))
+    pen1.hideturtle()
+
+running=True
+
+def gameOver():
+    global running,score
+    running=False
+    pen2=turtle.Turtle()
+    pen2.color("red")
+    pen2.write(f"Game Over\nYour Score Was {score}",align="center",font=("Arial",35,"bold"))
+    pen2.hideturtle()
+    screen.update()
+    time.sleep(10000)
+    exit() #screen.bye()
+
+#game variables
+gameSpeed=0.02
+diffIncrease=0.001
+spawnInterval=2
+lastSpawnTime=time.time()
+
+while running:
+    screen.update()
+    currentTime=time.time()
+    #spawn balloons at intervals
+    if currentTime-lastSpawnTime>spawnInterval:
+        spawnBalloon()
+        lastSpawnTime=currentTime
+    
+    #move the balloons
+    for balloon in balloons:
+        balloonY=balloon.ycor()
+        balloonSpeed=balloon.speed
+        balloon.sety(balloonY-balloonSpeed)
+        
+
 
 screen.mainloop()
