@@ -7,7 +7,7 @@ import time
 screen=turtle.Screen()
 screen.setup(800,600)
 screen.bgcolor("light blue")
-#screen.tracer(0)
+screen.tracer(0)
 
 
 #dart
@@ -50,7 +50,7 @@ def spawnBalloon():
     balloon.shape("circle")
     balloon.color(random.choice(colors))
     x=random.randint(-350,350)
-    y=random.randint(-200,350)
+    y=random.randint(200,300)
     balloon.penup()
     balloon.goto(x,y)
     balloon.speed=random.uniform(1,3)
@@ -79,8 +79,8 @@ def gameOver():
     pen2.write(f"Game Over\nYour Score Was {score}",align="center",font=("Arial",35,"bold"))
     pen2.hideturtle()
     screen.update()
-    time.sleep(10000)
-    exit() #screen.bye()
+    time.sleep(3)
+    screen.bye()
 
 #game variables
 gameSpeed=0.02
@@ -101,7 +101,29 @@ while running:
         balloonY=balloon.ycor()
         balloonSpeed=balloon.speed
         balloon.sety(balloonY-balloonSpeed)
+        if balloon.ycor()<=-300:
+            balloons.remove(balloon)
+            balloon.hideturtle()
         
+        #check for collision with dart
+
+        if dart.distance(balloon)<30:
+            if balloon.isBomb:
+                gameOver()
+            else:
+                updateScore()
+            balloons.remove(balloon)
+            balloon.hideturtle()
+
+    #prevent negative gamespeed
+    gameSpeed=max(0.005,gameSpeed-diffIncrease)
+    #prevent too frequent spawn of balloons
+    spawnInterval=max(0.5,spawnInterval-0.0005)
+    time.sleep(gameSpeed)
+
+
+
+
 
 
 screen.mainloop()
